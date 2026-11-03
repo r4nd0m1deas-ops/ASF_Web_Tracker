@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ASF Maintenance Task Tracker</title>
+<style>
+:root { --accent:#2F5496; --bg:#f4f6f9; --card:#fff; }
+* { box-sizing: border-box; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; color: #333; }
+header { background: var(--accent); color: #fff; padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; }
+header h1 { margin: 0; font-size: 18px; }
+header .rev { font-size: 12px; opacity: .8; }
+nav a { color: #fff; margin-left: 16px; text-decoration: none; font-size: 14px; }
+.container { max-width: 900px; margin: 24px auto; padding: 0 16px; }
+.card { background: var(--card); border-radius: 8px; padding: 20px; box-shadow: 0 2px 6px rgba(0,0,0,.08); margin-bottom: 16px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { border-bottom: 1px solid #eee; padding: 8px; text-align: left; }
+th { background: #f0f4fa; }
+input, select, textarea { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; width: 100%; }
+label { display: block; font-size: 12px; font-weight: 600; color: #555; margin-bottom: 4px; margin-top: 12px; }
+button, .btn { background: var(--accent); color: #fff; border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer; font-weight: 600; text-decoration: none; display: inline-block; }
+button.secondary, .btn.secondary { background: #6c757d; }
+button.danger { background: #dc3545; }
+.flash { background: #fff3cd; border: 1px solid #ffc107; padding: 10px; border-radius: 4px; margin-bottom: 12px; }
+.footer { text-align: center; font-size: 11px; color: #999; margin-top: 24px; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>ASF Maintenance Task Tracker</h1>
+    <div class="rev">rev 1.00</div>
+  </div>
+  {% if session.user %}
+  <nav>
+    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+    {% if session.is_admin %}<a href="{{ url_for('admin') }}">Admin</a>{% endif %}
+    <a href="{{ url_for('logout') }}">Logout</a>
+  </nav>
+  {% endif %}
+</header>
+<div class="container">
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}{% for m in messages %}<div class="flash">{{ m }}</div>{% endfor %}{% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+  <div class="footer">by r4nd0m1deas</div>
+</div>
+</body>
+</html>

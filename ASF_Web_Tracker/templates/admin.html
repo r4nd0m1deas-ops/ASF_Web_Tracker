@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2 style="margin-top:0">Admin Setup</h2>
+  <form method="post" action="{{ url_for('admin_emails') }}">
+    <label>Default Email Address(es) (comma separated)</label>
+    <input name="emails" value="{{ emails }}" placeholder="user1@company.com, user2@company.com">
+    <button type="submit" style="margin-top:8px">Save Emails</button>
+  </form>
+</div>
+<div class="card">
+  <h3 style="margin-top:0">Add User</h3>
+  <form method="post" action="{{ url_for('admin_user_add') }}">
+    <label>Username</label><input name="username" required>
+    <label>Password</label><input name="password" type="password" required>
+    <label>Full Name</label><input name="full_name">
+    <label><input type="checkbox" name="is_admin"> Admin</label>
+    <button type="submit" style="margin-top:8px">Add User</button>
+  </form>
+</div>
+<div class="card">
+  <h3 style="margin-top:0">Users</h3>
+  <table>
+    <tr><th>Username</th><th>Name</th><th>Role</th><th>Status</th><th>Actions</th></tr>
+    {% for u in users %}
+    <tr>
+      <td>{{ u.username }}</td>
+      <td>{{ u.full_name }}</td>
+      <td>{{ 'Admin' if u.is_admin else 'User' }}</td>
+      <td>{{ 'Active' if u.is_active else 'Inactive' }}</td>
+      <td>
+        <a href="{{ url_for('admin_user_role', uid=u.id) }}">Toggle Role</a> |
+        <a href="{{ url_for('admin_user_toggle', uid=u.id) }}">{{ 'Deactivate' if u.is_active else 'Activate' }}</a>
+        <form method="post" action="{{ url_for('admin_user_reset', uid=u.id) }}" style="display:inline">
+          <input name="password" placeholder="new pass" style="width:100px;padding:4px">
+          <button type="submit" style="padding:4px 8px;font-size:12px">Reset</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

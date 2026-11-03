@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2 style="margin-top:0">Welcome, {{ session.full_name }}</h2>
+  <p>Date: {{ today }} &nbsp;|&nbsp; <strong>Total hours: {{ "%.2f"|format(total) }}</strong> &nbsp;|&nbsp; {{ tasks|length }} task(s)</p>
+</div>
+<div class="card">
+  <h3 style="margin-top:0">Today's Tasks</h3>
+  {% if tasks %}
+  <table>
+    <tr><th>Equipment / Task</th><th>Hours</th><th>Resolved</th><th>WO</th><th></th></tr>
+    {% for t in tasks %}
+    <tr>
+      <td>{{ t.equipment }}</td>
+      <td>{{ "%.2f"|format(t.hours) }}</td>
+      <td>{{ 'Yes' if t.resolved else 'No' }}</td>
+      <td>{{ t.wo_number if t.has_wo else '-' }}</td>
+      <td>
+        <a href="{{ url_for('task_edit', tid=t.id) }}">Edit</a> |
+        <a href="{{ url_for('task_delete', tid=t.id) }}" onclick="return confirm('Delete?')">Del</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p style="color:#888">No tasks yet today.</p>
+  {% endif %}
+</div>
+<div class="card">
+  <h3 style="margin-top:0">Add Task</h3>
+  <form method="post" action="{{ url_for('task_add') }}">
+    <label>Equipment or Task</label>
+    <input name="equipment" required>
+    <div style="display:flex;gap:12px">
+      <div style="flex:1"><label>Hours</label><input name="hours" type="number" min="0" value="0"></div>
+      <div style="flex:1"><label>Minutes</label><input name="minutes" type="number" min="0" max="59" value="0"></div>
+    </div>
+    <label><input type="checkbox" name="resolved"> Resolved</label>
+    <label><input type="checkbox" name="has_wo" id="hasWo" onchange="document.getElementById('woField').style.display=this.checked?'block':'none'"> Work Order</label>
+    <div id="woField" style="display:none"><label>WO Number</label><input name="wo_number"></div>
+    <label>Notes (max 255)</label>
+    <textarea name="notes" maxlength="255" rows="2"></textarea>
+    <button type="submit" style="margin-top:12px">Add Task</button>
+  </form>
+</div>
+<div class="card">
+  <a href="{{ url_for('download_csv') }}" class="btn secondary">Download CSV</a>
+  <a href="{{ url_for('submit_email') }}" class="btn" style="margin-left:8px">Email / Submit</a>
+</div>
+{% endblock %}
